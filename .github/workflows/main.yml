@@ -1,0 +1,102 @@
+name: Harness Plan
+
+on:
+  # workflow_call:
+            
+  workflow_dispatch:
+  
+permissions:
+  id-token: write
+  contents: read
+  
+jobs:
+  terraform-plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    # environment:
+    #     name: ${{ inputs.gh_environment }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+          
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2.0.3
+        with:
+         terraform_version: "~>3.0"          
+        
+      # - name: Get list of changed directories
+      #   id: get-changed-dirs
+      #   run: |
+      #     CHANGED_DIRS=$(git diff --dirstat=files,0 HEAD^ HEAD | awk '{print $2}')
+      #     LAST_CHANGED_DIR=$(echo "$CHANGED_DIRS" | tail -n 1)
+      #     echo "Latest changed directory: $LAST_CHANGED_DIR"
+      #     echo "::set-output name=dir::$LAST_CHANGED_DIR"
+          
+      # - name: Copy private key to download remote repo files
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "${{ secrets.AC_HARNESS_TF_MODULES_PVT_KEY }}" > ~/.ssh/id_rsa
+      #     chmod 600 ~/.ssh/id_rsa
+
+      - uses: azure/login@v1
+        with:
+         # use_oidc: true
+         client-id: ${{ secrets.client_id }}
+         tenant-id: ${{ secrets.tenant_id }}
+         # subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+         allow-no-subscriptions: true
+
+      # - uses: azure/login@v1
+      #   with:
+      #    creds: ${{ secrets.AZURE_CREDENTIALS }}
+         
+      - name: Terraform Plan Pipelines
+        # working-directory: 'pipelines/ecs'
+        working-directory: 'connectors'
+        # working-directory: ${{ inputs.workdir_path }}
+        run: |
+          echo "TF_VAR_HARNESS_ENDPOINT=${{ secrets.TF_VAR_HARNESS_ENDPOINT }}" >> $GITHUB_ENV
+          echo "TF_VAR_HARNESS_ACCOUNT_ID=${{ secrets.TF_VAR_HARNESS_ACCOUNT_ID }}" >> $GITHUB_ENV
+          echo "TF_VAR_HARNESS_PLATFORM_API_KEY=${{ secrets.TF_VAR_HARNESS_PLATFORM_API_KEY }}" >> $GITHUB_ENV
+          # terraform init -backend-config="role_arn=${{ secrets.S3_BACKEND_ROLE_PROD_ARN }}"
+          # terraform init -backend-config="resource_group_name=${{ secrets.AZURE_RG_NAME }}" \
+          #      -backend-config="storage_account_name=${{ secrets.AZURE_STORAGE_ACCOUNT }}" \
+          #      -backend-config="container_name=${{ secrets.AZURE_STORAGE_CONTAINER }}" \
+          #      -backend-config="key=terraform.tfstate" \
+          #      -backend-config="access_key=${{ secrets.AZURE_STORAGE_KEY }}"
+          terraform init -backend-config="resource_group_name=Testvm_group" \
+               -backend-config="storage_account_name=testvmgroupb7e2" \
+               -backend-config="container_name=tfstate" \
+               -backend-config="key=test.tfstate"
+               # -backend-config="access_key=test.tf"
+          terraform plan -var="TF_VAR_HARNESS_ENDPOINT=${{ secrets.TF_VAR_HARNESS_ENDPOINT }}" -var="TF_VAR_HARNESS_ACCOUNT_ID=${{ secrets.TF_VAR_HARNESS_ACCOUNT_ID }}" -var="TF_VAR_HARNESS_PLATFORM_API_KEY=${{ secrets.TF_VAR_HARNESS_PLATFORM_API_KEY }}"
+
+      # - name: Terraform Plan Services
+      #   working-directory: 'services/ecs'
+      #   # working-directory: ${{ inputs.workdir_path }}
+      #   run: |
+      #     echo "TF_VAR_HARNESS_ENDPOINT=${{ secrets.TF_VAR_HARNESS_ENDPOINT }}" >> $GITHUB_ENV
+      #     echo "TF_VAR_HARNESS_ACCOUNT_ID=${{ secrets.TF_VAR_HARNESS_ACCOUNT_ID }}" >> $GITHUB_ENV
+      #     echo "TF_VAR_HARNESS_PLATFORM_API_KEY=${{ secrets.TF_VAR_HARNESS_PLATFORM_API_KEY }}" >> $GITHUB_ENV
+      #     terraform init -backend-config="role_arn=${{ secrets.S3_BACKEND_ROLE_PROD_ARN }}"
+      #     terraform plan -var="TF_VAR_HARNESS_ENDPOINT=${{ secrets.TF_VAR_HARNESS_ENDPOINT }}" -var="TF_VAR_HARNESS_ACCOUNT_ID=${{ secrets.TF_VAR_HARNESS_ACCOUNT_ID }}" -var="TF_VAR_HARNESS_PLATFORM_API_KEY=${{ secrets.TF_VAR_HARNESS_PLATFORM_API_KEY }}"
+
+      # - name: Terraform Plan Input Sets
+      #   working-directory: 'inputsets/ecs'
+      #   # working-directory: ${{ inputs.workdir_path }}
+      #   run: |
+      #     echo "TF_VAR_HARNESS_ENDPOINT=${{ secrets.TF_VAR_HARNESS_ENDPOINT }}" >> $GITHUB_ENV
+      #     echo "TF_VAR_HARNESS_ACCOUNT_ID=${{ secrets.TF_VAR_HARNESS_ACCOUNT_ID }}" >> $GITHUB_ENV
+      #     echo "TF_VAR_HARNESS_PLATFORM_API_KEY=${{ secrets.TF_VAR_HARNESS_PLATFORM_API_KEY }}" >> $GITHUB_ENV
+      #     terraform init -backend-config="role_arn=${{ secrets.S3_BACKEND_ROLE_PROD_ARN }}"
+      #     terraform plan -var="TF_VAR_HARNESS_ENDPOINT=${{ secrets.TF_VAR_HARNESS_ENDPOINT }}" -var="TF_VAR_HARNESS_ACCOUNT_ID=${{ secrets.TF_VAR_HARNESS_ACCOUNT_ID }}" -var="TF_VAR_HARNESS_PLATFORM_API_KEY=${{ secrets.TF_VAR_HARNESS_PLATFORM_API_KEY }}"
+
+      # - name: Terraform Plan Triggers
+      #   working-directory: 'triggers/ecs'
+      #   # working-directory: ${{ inputs.workdir_path }}
+      #   run: |
+      #     echo "TF_VAR_HARNESS_ENDPOINT=${{ secrets.TF_VAR_HARNESS_ENDPOINT }}" >> $GITHUB_ENV
+      #     echo "TF_VAR_HARNESS_ACCOUNT_ID=${{ secrets.TF_VAR_HARNESS_ACCOUNT_ID }}" >> $GITHUB_ENV
+      #     echo "TF_VAR_HARNESS_PLATFORM_API_KEY=${{ secrets.TF_VAR_HARNESS_PLATFORM_API_KEY }}" >> $GITHUB_ENV
+      #     terraform init -backend-config="role_arn=${{ secrets.S3_BACKEND_ROLE_PROD_ARN }}"
+      #     terraform plan -var="TF_VAR_HARNESS_ENDPOINT=${{ secrets.TF_VAR_HARNESS_ENDPOINT }}" -var="TF_VAR_HARNESS_ACCOUNT_ID=${{ secrets.TF_VAR_HARNESS_ACCOUNT_ID }}" -var="TF_VAR_HARNESS_PLATFORM_API_KEY=${{ secrets.TF_VAR_HARNESS_PLATFORM_API_KEY }}"
