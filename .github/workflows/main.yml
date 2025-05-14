@@ -38,13 +38,14 @@ jobs:
       #     echo "${{ secrets.AC_HARNESS_TF_MODULES_PVT_KEY }}" > ~/.ssh/id_rsa
       #     chmod 600 ~/.ssh/id_rsa
 
+      # Log into Azure with OIDC integration
+      - name: 'Az CLI login'
       - uses: azure/login@v1
         with:
-         # use_oidc: true
          client-id: ${{ secrets.client_id }}
          tenant-id: ${{ secrets.tenant_id }}
-         # subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-         allow-no-subscriptions: true
+         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+         # allow-no-subscriptions: true
 
       # - uses: azure/login@v1
       #   with:
