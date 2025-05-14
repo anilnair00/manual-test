@@ -59,7 +59,7 @@ jobs:
           terraform init -backend-config="resource_group_name=Testvm_group" \
                -backend-config="storage_account_name=testvmgroupb7e2" \
                -backend-config="container_name=tfstate" \
-               -backend-config="key=full.tfstate"               
+               -backend-config="key=final.tfstate"               
         # env:
         # #     STORAGE_ACCOUNT: ${{ secrets.STORAGE_ACCOUNT }}
         # #     CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
