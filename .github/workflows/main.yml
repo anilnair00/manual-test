@@ -86,7 +86,7 @@ jobs:
           ARM_TENANT_ID: ${{ secrets.tenant_id }}
         run: terraform apply -auto-approve
 
-      - name: Terraform apply
+      - name: Terraform destroy
         id: destroy
         env:
           ARM_CLIENT_ID: ${{ secrets.client_id }}
