@@ -72,26 +72,26 @@ jobs:
 
       - name: Terraform plan
         id: plan
-        env:
-          ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
-          # ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
+        # env:
+        #   ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+        #   # ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        #   ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
         run: terraform plan -no-color
 
       - name: Terraform apply
         id: apply
-        env:
-          ARM_CLIENT_ID: ${{ secrets.client_id }}
-          # ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID: ${{ secrets.tenant_id }}
+        # env:
+        #   ARM_CLIENT_ID: ${{ secrets.client_id }}
+        #   # ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        #   ARM_TENANT_ID: ${{ secrets.tenant_id }}
         run: terraform apply -auto-approve
 
       - name: Terraform destroy
         id: destroy
-        env:
-          ARM_CLIENT_ID: ${{ secrets.client_id }}
-          # ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID: ${{ secrets.tenant_id }}
+        # env:
+        #   ARM_CLIENT_ID: ${{ secrets.client_id }}
+        #   # ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+        #   ARM_TENANT_ID: ${{ secrets.tenant_id }}
         run: terraform destroy -auto-approve
         
       # - name: Terraform Plan Services
