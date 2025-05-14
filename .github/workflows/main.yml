@@ -40,7 +40,7 @@ jobs:
 
       # Log into Azure with OIDC integration
       - name: 'Az CLI login'
-      - uses: azure/login@v1
+        uses: azure/login@v1
         with:
          client-id: ${{ secrets.CLIENT_ID }}
          tenant-id: ${{ secrets.TENANT_ID }}
