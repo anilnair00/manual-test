@@ -31,12 +31,6 @@ jobs:
       #     LAST_CHANGED_DIR=$(echo "$CHANGED_DIRS" | tail -n 1)
       #     echo "Latest changed directory: $LAST_CHANGED_DIR"
       #     echo "::set-output name=dir::$LAST_CHANGED_DIR"
-          
-      # - name: Copy private key to download remote repo files
-      #   run: |
-      #     mkdir -p ~/.ssh
-      #     echo "${{ secrets.AC_HARNESS_TF_MODULES_PVT_KEY }}" > ~/.ssh/id_rsa
-      #     chmod 600 ~/.ssh/id_rsa
 
       # Log into Azure with OIDC integration
       - name: 'Az CLI login'
@@ -46,10 +40,6 @@ jobs:
          tenant-id: ${{ secrets.TENANT_ID }}
          # subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
          allow-no-subscriptions: true
-
-      # - uses: azure/login@v1
-      #   with:
-      #    creds: ${{ secrets.AZURE_CREDENTIALS }}
          
       - name: Terraform INT
         # working-directory: 'pipelines/ecs'
@@ -71,12 +61,12 @@ jobs:
                -backend-config="container_name=tfstate" \
                -backend-config="key=full.tfstate"               
         env:
-            STORAGE_ACCOUNT: ${{ secrets.STORAGE_ACCOUNT }}
-            CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
-            RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
-            ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
-            # ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-            ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
+        #     STORAGE_ACCOUNT: ${{ secrets.STORAGE_ACCOUNT }}
+        #     CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
+        #     RESOURCE_GROUP_NAME: ${{ secrets.RESOURCE_GROUP_NAME }}
+           ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+        #     # ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+           ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
           # run: terraform init -backend-config="storage_account_name=$STORAGE_ACCOUNT" -backend-config="container_name=$CONTAINER_NAME" -backend-config="resource_group_name=$RESOURCE_GROUP_NAME"
           # terraform plan -var="TF_VAR_HARNESS_ENDPOINT=${{ secrets.TF_VAR_HARNESS_ENDPOINT }}" -var="TF_VAR_HARNESS_ACCOUNT_ID=${{ secrets.TF_VAR_HARNESS_ACCOUNT_ID }}" -var="TF_VAR_HARNESS_PLATFORM_API_KEY=${{ secrets.TF_VAR_HARNESS_PLATFORM_API_KEY }}"
 
@@ -87,7 +77,15 @@ jobs:
           # ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
         run: terraform plan -no-color
-      
+
+      - name: Terraform apply
+        id: apply
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+        run: terraform apply -auto-approve
+        
       # - name: Terraform Plan Services
       #   working-directory: 'services/ecs'
       #   # working-directory: ${{ inputs.workdir_path }}
