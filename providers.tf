@@ -10,6 +10,10 @@ terraform {
         }
     }  
     backend "azurerm" {
+      resource_group_name  = "Testvm_group"
+      storage_account_name = "testvmgroupb7e2"
+      container_name       = "tfstate"
+      key                  = "finale.tfstate"
       use_oidc         = true
       use_azuread_auth = true
   }
