@@ -4,10 +4,12 @@
 #    org_id    = "default"  
 #}
 resource "harness_platform_connector_azure_cloud_provider" "inherit_from_delegate_user_assigned_managed_identity" {
-  identifier  = "identifier"
+  identifier  = "azureconnector"
   name        = "AzureConnector"
   description = "Connector with UMI"
   tags        = ["foo:bar"]
+  org_id     = "default"
+  project_id = "Terraform_Test_Project"
 
   credentials {
     type = "InheritFromDelegate"
