@@ -14,7 +14,7 @@ resource "harness_platform_connector_azure_cloud_provider" "inherit_from_delegat
     azure_inherit_from_delegate_details {
       auth {
         azure_msi_auth_ua {
-          client_id = "client_id"
+          client_id = "69f9d7ce-718e-42c7-adef-8321321f81cf"
         }
         type = "UserAssignedManagedIdentity"
       }
