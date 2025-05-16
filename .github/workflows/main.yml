@@ -85,14 +85,6 @@ jobs:
         #   # ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         #   ARM_TENANT_ID: ${{ secrets.tenant_id }}
         run: terraform apply -auto-approve
-
-      - name: Terraform destroy
-        id: destroy
-        # env:
-        #   ARM_CLIENT_ID: ${{ secrets.client_id }}
-        #   # ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        #   ARM_TENANT_ID: ${{ secrets.tenant_id }}
-        run: terraform destroy -auto-approve
         
       # - name: Terraform Plan Services
       #   working-directory: 'services/ecs'
