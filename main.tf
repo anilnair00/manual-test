@@ -4,7 +4,7 @@
 #    org_id    = "default"  
 #}
 resource "harness_platform_connector_azure_cloud_provider" "inherit_from_delegate_user_assigned_managed_identity" {
-  identifier  = "Terraform_Test_Project"
+  identifier  = "identifier"
   name        = "AzureConnector"
   description = "Connector with UMI"
   tags        = ["foo:bar"]
@@ -21,5 +21,5 @@ resource "harness_platform_connector_azure_cloud_provider" "inherit_from_delegat
     }
   }
   azure_environment_type = "AZURE"
-  delegate_selectors     = ["harness-delegate"]
+  delegate_selectors     = ["kubernetes-delegate"]
 }
